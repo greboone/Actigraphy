@@ -1,4 +1,6 @@
 hchs_to_agd <- function(){
+  library(magrittr)
+  library(DBI)
   # Load Csv file
   a = read.csv('/home/grauber/Documentos/dev/Actigraphy/data/hchs/hchs-sol-sueno-00163225.csv')
   # Normalize to send to agd file
