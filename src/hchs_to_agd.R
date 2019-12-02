@@ -3,8 +3,11 @@ hchs_to_agd <- function(){
   library(DBI)
   # Load Csv file
   a = read.csv('/home/grauber/Documentos/dev/Actigraphy/data/hchs/hchs-sol-sueno-00163225.csv')
+  
+  #insert day to timestamp
+  a <- insert_date(a)
+  
   # Normalize to send to agd file
-  # Try JUST timestamp and activity on axis1
   b = data.frame(timestamp=(a$time), 
                  axis1=(a$activity), 
                  axis2=(a$activity), 
