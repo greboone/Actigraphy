@@ -1,4 +1,5 @@
 insert_date <- function(data){
+  
   lines = tail(data$line,1)
   i=1
   day = 1
@@ -22,6 +23,16 @@ insert_date <- function(data){
     i = i+1
   }
   
+  denis = data.frame(pid = data$pid,
+                     sawa2 = data$sawa2,
+                     line = data$line,
+                     offwrist = data$offwrist,
+                     whitelight = data$whitelist,
+                     starth = data$starth,
+                     day = data$day,
+                     dayofweek = data$dayofweek,
+                     validday = data$validday,
+                     time = b$timestamp)
   
-  data
+  denis
 }
