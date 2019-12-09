@@ -1,49 +1,58 @@
-hchs_to_agd <- function(){
-  
+hchs_to_agd <- function(file){
+  #librarys 
   library(magrittr)
   library(DBI)
+  library(assertthat)
+  library(RSQLite)
+  library(data.table)
+  library(dbplyr)
+  library(ggplot2)
+  library(lubridate)
+  library(readr)
+  library(purrr)
+  library(rlang)
+  library(stringr)
+  library(zoo)
+  library(actigraph.sleepr)
+  
   # Load Csv file
-  a = read.csv('/home/grauber/Documentos/dev/Actigraphy/data/hchs/hchs-sol-sueno-00163225.csv')
+  a = read.csv(file)
   
   # Insert day to timestamp and table comes normalized
+  print("Calling insert_date")
   b <- insert_date(a)
+  print(as_datetime(b$dataTimestamp))
+  print("Calling timestamp_to_agd")
+  
+  b <- timestamp_to_agd(b)
   
   # Create the agd database to insert data 
   file.copy("data/Model.agd","temp.agd")
-  #assert_that(file.exists("temp.agd"))
-  
+
   # Send to agd file
   db <- DBI::dbConnect(RSQLite::SQLite(), dbname = "temp.agd")
-  
-  dbWriteTable(db, "dataTimestamp", b$timestamp)
-  
-  select_dttms <- function(table, cols) {
-    query <- "INSERT"
-    for (col in cols) {
-      query <- paste0(query,
-                      " into ", table,
-                      " (",col,"),")
-    }
-    query <- sub("$),",");",query)
-    res <- dbSendQuery(db, query)
-    dbFetch(res)
-  }
-  
-  
-  #select_dttms("data", "dataTimestamp")
-  #select_dttms("data", "axis1")
-  
-  
-  
-  
-  
-  
+  #print("Tables: ")
+  #print(dbListTables(db))
+  #print("Data Table fields: ")
+  #print(dbListFields(db, "data"))
+  dbWriteTable(db,"data", b, append=TRUE)
+  dbDisconnect(db)
   
   # Load the agd file
+  print("Reading .agd File")
+  dataRaw_30 <- read_agd('temp.agd')
+  
+  print("Has missing epochs? ")
+  print(has_missing_epochs(dataRaw_30))
   
   # Process the data
-  #b <- b %>% collapse_epochs(60)
-  #c <- b %>% apply_tudor_locke()
-  
+  print("Collapsing epochs")
+  dataRaw_60 <- dataRaw_30 %>% collapse_epochs(60)
+  print("Applying Sadeh")
+  dataRaw_60 <- dataRaw_60 %>% apply_sadeh()
+  print("Applying tudor locke")
+  dataResult <- dataRaw_60 %>% apply_tudor_locke()
+  print(dataResult)
+  dataResult
 }
 
