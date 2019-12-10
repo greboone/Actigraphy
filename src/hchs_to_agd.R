@@ -1,22 +1,18 @@
-hchs_to_agd <- function(file){
+hchs_to_agd <- function(){
   #librarys 
   library(magrittr)
   library(DBI)
-  library(assertthat)
   library(RSQLite)
-  library(data.table)
-  library(dbplyr)
-  library(ggplot2)
-  library(lubridate)
-  library(readr)
-  library(purrr)
-  library(rlang)
-  library(stringr)
-  library(zoo)
   library(actigraph.sleepr)
+  
+  # Read local file
+  file <- readline(prompt="Enter: /path_to_file/file_name.csv: ")
   
   # Load Csv file
   a = read.csv(file)
+  
+  # Verify if file has NA in Activity collumn and change to 0
+  a = verify_NA(a)
   
   # Insert day to timestamp and table comes normalized
   print("Calling insert_date")
@@ -31,10 +27,10 @@ hchs_to_agd <- function(file){
 
   # Send to agd file
   db <- DBI::dbConnect(RSQLite::SQLite(), dbname = "temp.agd")
-  #print("Tables: ")
-  #print(dbListTables(db))
-  #print("Data Table fields: ")
-  #print(dbListFields(db, "data"))
+  print("Tables: ")
+  print(dbListTables(db))
+  print("Data Table fields: ")
+  print(dbListFields(db, "data"))
   dbWriteTable(db,"data", b, append=TRUE)
   dbDisconnect(db)
   
@@ -52,7 +48,10 @@ hchs_to_agd <- function(file){
   dataRaw_60 <- dataRaw_60 %>% apply_sadeh()
   print("Applying tudor locke")
   dataResult <- dataRaw_60 %>% apply_tudor_locke()
-  print(dataResult)
-  dataResult
+  #print(dataResult)
+  file.remove("temp.agd")
+  
+  agd_to_sleepweb(dataResult)
+  
 }
 
