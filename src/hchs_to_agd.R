@@ -17,7 +17,7 @@ hchs_to_agd <- function(){
   # Insert day to timestamp and table comes normalized
   print("Calling insert_date")
   b <- insert_date(a)
-  print(as_datetime(b$dataTimestamp))
+  #print(as_datetime(b$dataTimestamp))
   print("Calling timestamp_to_agd")
   
   b <- timestamp_to_agd(b)

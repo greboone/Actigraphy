@@ -2,25 +2,58 @@
 agd_to_sleepweb <- function(data){
   library(RPostgreSQL)
   
-  
-  indicator <- function(){
-    dele <- structure(list(indicator = ,
-                               value = ,
-                          monitoring = ), 
-              .Names = c("indicator","value","monitoring"), 
-              class = "data.frame", 
-              row.names = c(NA, 1))
-  }
-  monitoring <- function(){
+  insert_data <- function(info, linha, cochilo){
+    print("Inside insert_data")
+    print(info)
+    if(cochilo == 0){
+      
+    #monitoring <- list(patient = "5b3edff7-e011-4388-8be4-dd9a20fe92ec", # UUID do paciente
+     #                            monitoring_begin = data$in_bed_time[i],
+      #                           monitoring_end = data$out_bed_time[i])  
     
-    dale  <- structure(list(patient = , # UUID do paciente
-                   monitoring_begin = data$in_bed_time,
-                   monitoring_end = data$out_bed_time), 
-              .Names = c("patient","monitoring_begin","monitoring_end"), 
-              class = "data.frame", 
-              row.names = c(NA, 1))
-  }
-  
+    monitoring <- structure(list(patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec', # UUID do paciente
+                                 monitoring_begin = info$in_bed_time,
+                                 monitoring_end = info$out_bed_time), 
+                            .Names = c("patient","monitoring_begin","monitoring_end"), 
+                            class = "data.frame", 
+                            row.names = c(NA, 1))#, tail(info,1)))  
+    
+    
+    #utilizar querys
+    print(monitoring)
+    print("Inserting into table monitoring")
+    dbWriteTable(db,"monitoring", monitoring, append = TRUE)
+    print("Inserted into table")
+    dbReadTable(db, "monitoring")
+    
+    
+    query <- paste0("SELECT id 
+                     FROM monitoring 
+                     WHERE last_update IS NOT NULL; ")
+    print("Sending Query")
+    monitoring_id <- dbSendQuery(db, query)
+      
+    indicator <- structure(list(indicator = 1, # Eficiencia
+                                 value = info$efficiency,
+                            monitoring = monitoring_id), 
+                .Names = c("indicator","value","monitoring"), 
+                class = "data.frame", 
+                row.names = c(NA, 1))
+    dbWriteTable(db,"indicator", indicator, append=TRUE)
+    
+    indicator <- structure(list(indicator = 2, # Latencia do sono
+                                value = info$total_sleep_time,
+                                monitoring = monitoring_id), 
+                           .Names = c("indicator","value","monitoring"), 
+                           class = "data.frame", 
+                           row.names = c(NA, 1))
+    dbWriteTable(db,"indicator", indicator, append=TRUE)
+    
+    
+    
+    }else{}
+    
+}
   
   
   
@@ -41,14 +74,25 @@ agd_to_sleepweb <- function(data){
   print("Data Table patient fields: ")
   print(dbListFields(db, "patient"))
   
-  while(data$onset[lines] != tail(data$onset,1)){
-    lines = lines+1
+  print(tail(data$in_bed_time,1))
+  
+  condition <- data$in_bed_time[1]
+  linha <- 1
+  i <- 1
+  print("Counting lines")
+  while(condition != tail(data$in_bed_time,1)){
+    print(linha)
+    linha = linha + 1
+    condition <- data$in_bed_time[linha]
   }
   
-  indicator() 
+  print("Starting While")
+  while(i != linha){
+    insert_data(data[i,], i, 0)
+    i = i+1
+  }
   
-  monitoring()
-  
+  dbDisconnect(db)
 }
 
 #
