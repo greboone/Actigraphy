@@ -2,7 +2,8 @@
 #' convert the timestamp to .agd format and the data to a .agd file. After that the .agd file is loaded and the
 #' library actigraph.sleepr is used to process the data. Then the agd_to_sleepweb is called.
 hchs_to_agd <- function(){
-  library(magrittr,DBI,RSQLite)
+  library(magrittr,DBI)
+  library(RSQLite)
   library(actigraph.sleepr)
 
   file <- readline(prompt="Enter: /path_to_file/file_name.csv: ")

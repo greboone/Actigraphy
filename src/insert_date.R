@@ -1,3 +1,4 @@
+#' Insert date insert to the data missing values
 insert_date <- function(data){
   print("Inside insert_date")
   lines = tail(data$line,1)
@@ -17,7 +18,7 @@ insert_date <- function(data){
     
     date <- paste0("2000-01-0", day)
     aux <- paste(date, data$time[i])
-    b$timestamp[i] <- aux #as.POSIXct(aux, format = "%Y-%m-%d %H:%M:%S")
+    b$timestamp[i] <- aux 
     
     if(tmp != tmp1){
       day = day+1
@@ -30,7 +31,7 @@ insert_date <- function(data){
                       steps = data$line), 
                      .Names = c("dataTimestamp","axis1","steps"), 
                       class = "data.frame", 
-                  row.names = c(NA, tail(data$line,1)))#as.factor(paste0(-1*tail(data$line,1),"L")))) #-22308L))
+                  row.names = c(NA, tail(data$line,1)))
 
   df
 }

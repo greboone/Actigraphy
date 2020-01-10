@@ -1,25 +1,9 @@
+#' Insert data connect to the database 'monitoring' and send the data for each monitoring input
 insert_data <- function(info, linha, cochilo){
   print("Inside insert_data")
   print(info)
+  
   tryCatch(
-    {
-      if(cochilo == 0){
-        
-        #monitoring <- list(patient = "5b3edff7-e011-4388-8be4-dd9a20fe92ec", # UUID do paciente
-        #                            monitoring_begin = data$in_bed_time[i],
-        #                           monitoring_end = data$out_bed_time[i])  
-        
-        #monitoring <- structure(list(
-        patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec' #, # UUID do paciente
-        monitoring_begin = info$in_bed_time #,
-        monitoring_end = info$out_bed_time #), 
-        #.Names = c("patient","monitoring_begin","monitoring_end"), 
-        #class = "data.frame", 
-        #row.names = c(NA, 1))#, tail(info,1))) 
-        
-        query <- paste0("INSERT INTO monitoring (patient, monitoring_begin, monitoring_end) VALUES('", patient, "', '", monitoring_begin, "', '", monitoring_end, "')")
-        
-        tryCatch(
           expr = {
             drv <- dbDriver("PostgreSQL")
             db <- dbConnect(drv, dbname = "monitoramento",
@@ -38,56 +22,98 @@ insert_data <- function(info, linha, cochilo){
             dbDisconnect(db)
             return(NULL)
           }
-        )
+  )
+  
+  tryCatch(
+    {
+      if(cochilo == 0){
+
+        patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec' # patient UUID
+        monitoring_begin = info$in_bed_time
+        monitoring_end = info$out_bed_time
+        
+        query <- paste0("INSERT INTO monitoring 
+                         (patient, monitoring_begin, monitoring_end) 
+                         VALUES('", patient, "', '", monitoring_begin, "', '", monitoring_end, "')")
+        
         print(isPostgresqlIdCurrent(db))
         print("Inserting into table monitoring")
         dbSendQuery(db,query)
         
-        #dbWriteTable(db,"monitoring", monitoring, append = TRUE)
         print("Inserted into table")
-        dbReadTable(db, "monitoring")
-        
-        
+        print("Selecting 'id' from table")
         query <- paste0("SELECT id 
                      FROM monitoring;")
         print("Sending Query")
-        #monitoring_id <- 
-        #dbSendQuery(db, query)
-        dbFetch(dbSendQuery(db, query))
-        #dbFetch(monitoring_id)
-        #print(monitoring_id) 
-        #dbClearResult(monitoring_id)
-        print("DALEMERDA")
+        monitoring_id <- dbSendQuery(db, query)
+        monitoring_id <- dbFetch(monitoring_id)
+        print(monitoring_id) 
+        print("Query send")
         
-        #indicator <- structure(list(
         indicator = 1#, # Eficiencia
         value = info$efficiency#,
-        monitoring = monitoring_id#), 
-        #.Names = c("indicator","value","monitoring"), 
-        #class = "data.frame", 
-        #row.names = c(NA, 1))
-        #dbWriteTable(db,"indicator", indicator, append=TRUE)
-        query <- paste0("INSERT INTO indicator (indicator, value, monitoring) VALUES(", indicator, ", ", value, ", ", monitoring, ")")
+        monitoring <- tail(monitoring_id,1)#), 
+        query <- paste0("INSERT INTO indicator 
+                         (indicator, value, monitoring) 
+                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
         print("Inserting into table indicator")
         dbSendQuery(db,query)
         
-        
-        
-        
-        #indicator <- structure(list(
+
         indicator = 2#, # Latencia do sono
         value = info$total_sleep_time#,
-        monitoring = monitoring_id#), 
-        #.Names = c("indicator","value","monitoring"), 
-        #class = "data.frame", 
-        #row.names = c(NA, 1))
-        #dbWriteTable(db,"indicator", indicator, append=TRUE)
-        query <- paste0("INSERT INTO indicator (indicator, value, monitoring) VALUES(", indicator, ", ", value, ", ", monitoring, ")")
+        monitoring <- tail(monitoring_id,1)#), 
+
+        query <- paste0("INSERT INTO indicator 
+                         (indicator, value, monitoring) 
+                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
         print("Inserting into table indicator")
         dbSendQuery(db,query)
         
         
-      }else{}
+      }else{
+        patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec' # patient UUID
+        monitoring_begin = info$in_bed_time
+        monitoring_end = info$out_bed_time
+        
+        query <- paste0("INSERT INTO monitoring 
+                         (patient, monitoring_begin, monitoring_end) 
+                         VALUES('", patient, "', '", monitoring_begin, "', '", monitoring_end, "')")
+        
+        print(isPostgresqlIdCurrent(db))
+        print("Inserting into table monitoring")
+        dbSendQuery(db,query)
+        
+        print("Inserted into table")
+        print("Selecting 'id' from table")
+        query <- paste0("SELECT id 
+                     FROM monitoring;")
+        print("Sending Query")
+        monitoring_id <- dbSendQuery(db, query)
+        monitoring_id <- dbFetch(monitoring_id)
+        print(monitoring_id) 
+        print("Query send")
+        
+        indicator = 6#, # Cochilo
+        value = info$efficiency#,
+        monitoring <- tail(monitoring_id,1)#), 
+        query <- paste0("INSERT INTO indicator 
+                         (indicator, value, monitoring) 
+                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
+        print("Inserting into table indicator")
+        dbSendQuery(db,query)
+        
+
+        indicator = 7#, # Duracao do cochilo
+        value = info$total_sleep_time#,
+        monitoring <- tail(monitoring_id,1)#), 
+
+        query <- paste0("INSERT INTO indicator 
+                         (indicator, value, monitoring) 
+                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
+        print("Inserting into table indicator")
+        dbSendQuery(db,query)
+      }
       
     },
     error=function(cond){
