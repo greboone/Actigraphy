@@ -1,4 +1,4 @@
-# Script que converte um AGD para o modelo de dados do SleepWeb
+# Script that converts the AGD data to put in Sleepweb pattern
 agd_to_sleepweb <- function(data){
   library(RPostgreSQL)
   print(data)
@@ -44,9 +44,19 @@ agd_to_sleepweb <- function(data){
         condition <- data$in_bed_time[linha]
       }
       
+      #condition_cochilo <- head(data$total_sleep_time,1)
+      
       print("Starting While")
       while(i != linha){
-        insert_data(data[i,], i, 0)
+        
+        condition_cochilo <- data$total_sleep_time[i]
+        
+        if(condition_cochilo >= 250){
+          insert_data(data[i,], i, 0)  
+        }else{
+          insert_data(data[i,], i, 1)
+        }
+        
         i = i+1
       }
       

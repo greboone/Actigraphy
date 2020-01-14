@@ -26,29 +26,29 @@ insert_data <- function(info, linha, cochilo){
   
   tryCatch(
     {
-      if(cochilo == 0){
-
-        patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec' # patient UUID
-        monitoring_begin = info$in_bed_time
-        monitoring_end = info$out_bed_time
-        
-        query <- paste0("INSERT INTO monitoring 
+      patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec' # patient UUID
+      monitoring_begin = info$in_bed_time
+      monitoring_end = info$out_bed_time
+      
+      query <- paste0("INSERT INTO monitoring 
                          (patient, monitoring_begin, monitoring_end) 
                          VALUES('", patient, "', '", monitoring_begin, "', '", monitoring_end, "')")
-        
-        print(isPostgresqlIdCurrent(db))
-        print("Inserting into table monitoring")
-        dbSendQuery(db,query)
-        
-        print("Inserted into table")
-        print("Selecting 'id' from table")
-        query <- paste0("SELECT id 
+      
+      print(isPostgresqlIdCurrent(db))
+      print("Inserting into table monitoring")
+      dbSendQuery(db,query)
+      
+      print("Inserted into table")
+      print("Selecting 'id' from table")
+      query <- paste0("SELECT id 
                      FROM monitoring;")
-        print("Sending Query")
-        monitoring_id <- dbSendQuery(db, query)
-        monitoring_id <- dbFetch(monitoring_id)
-        print(monitoring_id) 
-        print("Query send")
+      print("Sending Query")
+      monitoring_id <- dbSendQuery(db, query)
+      monitoring_id <- dbFetch(monitoring_id)
+      print(monitoring_id) 
+      print("Query send")
+      
+      if(cochilo == 0){
         
         indicator = 1#, # Eficiencia
         value = info$efficiency#,
@@ -72,47 +72,28 @@ insert_data <- function(info, linha, cochilo){
         
         
       }else{
-        patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec' # patient UUID
-        monitoring_begin = info$in_bed_time
-        monitoring_end = info$out_bed_time
-        
-        query <- paste0("INSERT INTO monitoring 
-                         (patient, monitoring_begin, monitoring_end) 
-                         VALUES('", patient, "', '", monitoring_begin, "', '", monitoring_end, "')")
-        
-        print(isPostgresqlIdCurrent(db))
-        print("Inserting into table monitoring")
-        dbSendQuery(db,query)
-        
-        print("Inserted into table")
-        print("Selecting 'id' from table")
-        query <- paste0("SELECT id 
-                     FROM monitoring;")
-        print("Sending Query")
-        monitoring_id <- dbSendQuery(db, query)
-        monitoring_id <- dbFetch(monitoring_id)
-        print(monitoring_id) 
-        print("Query send")
-        
-        indicator = 6#, # Cochilo
-        value = info$efficiency#,
-        monitoring <- tail(monitoring_id,1)#), 
-        query <- paste0("INSERT INTO indicator 
-                         (indicator, value, monitoring) 
-                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
-        print("Inserting into table indicator")
-        dbSendQuery(db,query)
-        
+        if(cochilo == 1){
 
-        indicator = 7#, # Duracao do cochilo
-        value = info$total_sleep_time#,
-        monitoring <- tail(monitoring_id,1)#), 
-
-        query <- paste0("INSERT INTO indicator 
-                         (indicator, value, monitoring) 
-                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
-        print("Inserting into table indicator")
-        dbSendQuery(db,query)
+          indicator = 6#, # Cochilo
+          value = info$efficiency#,
+          monitoring <- tail(monitoring_id,1)#), 
+          query <- paste0("INSERT INTO indicator 
+                           (indicator, value, monitoring) 
+                           VALUES(", indicator, ", ", value, ", ", monitoring, ")")
+          print("Inserting into table indicator")
+          dbSendQuery(db,query)
+          
+  
+          indicator = 7#, # Duracao do cochilo
+          value = info$total_sleep_time#,
+          monitoring <- tail(monitoring_id,1)#), 
+  
+          query <- paste0("INSERT INTO indicator 
+                           (indicator, value, monitoring) 
+                           VALUES(", indicator, ", ", value, ", ", monitoring, ")")
+          print("Inserting into table indicator")
+          dbSendQuery(db,query)
+        }
       }
       
     },
