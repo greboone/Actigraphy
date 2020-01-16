@@ -3,23 +3,15 @@ agd_to_sleepweb <- function(data){
   library(RPostgreSQL)
   print(data)
   
+  new_patient <- readline(prompt="New Patient? (Y/N): ")
+  
   tryCatch(
     expr = {
       drv <- dbDriver("PostgreSQL")
       db <- dbConnect(drv, dbname = "monitoramento",
                       host = "localhost", port = 5432,
                       user = "postgres", password = 3553)
-      
-      print("Tables: ")
-      print(dbListTables(db))
-      print("Data Table monitoring fields: ")
-      print(dbListFields(db, "monitoring"))
-      print("Data Table indicator fields: ")
-      print(dbListFields(db, "indicator"))
-      print("Data Table patient fields: ")
-      print(dbListFields(db, "patient"))
-      
-      print(tail(data$in_bed_time,1))
+
     },
     error=function(cond){
       message("Here's the original error message:")
@@ -37,14 +29,49 @@ agd_to_sleepweb <- function(data){
       condition <- data$in_bed_time[1]
       linha <- 1
       i <- 1
-      print("Counting lines")
       while(condition != tail(data$in_bed_time,1)){
         print(linha)
         linha = linha + 1
         condition <- data$in_bed_time[linha]
       }
       
-      #condition_cochilo <- head(data$total_sleep_time,1)
+      query <- paste0("SELECT * 
+                     FROM patient;")
+      print("Sending Query")
+      patients <- dbSendQuery(db, query)
+      patients <- dbFetch(patients)
+      
+      
+      if(new_patient == 'Y'|| new_patient == 'y'){
+        uuid <- UUIDgenerate(TRUE)
+        first_name <- readline(prompt="Patient First Name: ")
+        last_name <- readline(prompt="Patient Last Name: ")
+        birth_date <- readline(prompt = "Birth Date: ")
+        gender <- readline(prompt = "Gender (1/2): ")
+        
+        query <- paste0("INSERT into patient
+                         (uuid, first_name, last_name, birth_date, gender)
+                         VALUES
+                         ('",uuid, "', '", first_name, "', '", last_name, "', '", birth_date,"', ", gender,")")
+        new_patient <- dbSendQuery(db, query)
+        
+        patient_uuid <- uuid
+        
+      }else{
+        if(new_patient == 'N' || new_patient == 'n'){
+          print(patients)
+          patient_id <- readline(prompt="Which is your patient? (Select by id): ")
+          
+          query <- paste0("SELECT uuid 
+                           FROM patient
+                           WHERE id = ",patient_id,";")
+          uuid <- dbSendQuery(db, query)
+          uuid <- dbFetch(uuid)
+          print(uuid)
+          patient_uuid = uuid
+        }
+      }
+      
       
       print("Starting While")
       while(i != linha){
@@ -52,9 +79,9 @@ agd_to_sleepweb <- function(data){
         condition_cochilo <- data$total_sleep_time[i]
         
         if(condition_cochilo >= 250){
-          insert_data(data[i,], i, 0)  
+          insert_data(data[i,], i, 0, patient_uuid)  
         }else{
-          insert_data(data[i,], i, 1)
+          insert_data(data[i,], i, 1, patient_uuid)
         }
         
         i = i+1
@@ -80,13 +107,3 @@ agd_to_sleepweb <- function(data){
 #     10  |  Despertar
 #     11  |  Consciência após o início do sono (WASO)
 # 
-
-#patient <- structure(list(id = ,
- #                         uuid = ,
-  #                        first_name = ,
-   #                       last_name = ,
-    #                      birth_date = ,
-     #                     gender = ),
-      #               .Names = c("id","uuid","first_name","last_name", "birth_date","gender"),
-       #              class = "data.frame",
-        #             row.names = c(NA, ))#number of lines)

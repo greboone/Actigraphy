@@ -1,5 +1,5 @@
 #' Insert data connect to the database 'monitoring' and send the data for each monitoring input
-insert_data <- function(info, linha, cochilo){
+insert_data <- function(info, linha, cochilo, patient_uuid){
   print("Inside insert_data")
   print(info)
   
@@ -26,7 +26,7 @@ insert_data <- function(info, linha, cochilo){
   
   tryCatch(
     {
-      patient = '5b3edff7-e011-4388-8be4-dd9a20fe92ec' # patient UUID
+      patient = patient_uuid # patient UUID
       monitoring_begin = info$in_bed_time
       monitoring_end = info$out_bed_time
       
@@ -37,62 +37,64 @@ insert_data <- function(info, linha, cochilo){
       print(isPostgresqlIdCurrent(db))
       print("Inserting into table monitoring")
       dbSendQuery(db,query)
-      
       print("Inserted into table")
+      
       print("Selecting 'id' from table")
       query <- paste0("SELECT id 
                      FROM monitoring;")
       print("Sending Query")
       monitoring_id <- dbSendQuery(db, query)
       monitoring_id <- dbFetch(monitoring_id)
-      print(monitoring_id) 
+      print(monitoring_id)
       print("Query send")
       
       if(cochilo == 0){
         
-        indicator = 1#, # Eficiencia
-        value = info$efficiency#,
-        monitoring <- tail(monitoring_id,1)#), 
-        query <- paste0("INSERT INTO indicator 
-                         (indicator, value, monitoring) 
-                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
-        print("Inserting into table indicator")
-        dbSendQuery(db,query)
+        indicator = 1 # Eficiencia
+        value = info$efficiency
+        monitoring <- tail(monitoring_id,1)
+        send_query_indicator(db,indicator,value,monitoring)
         
 
-        indicator = 2#, # Latencia do sono
-        value = info$total_sleep_time#,
-        monitoring <- tail(monitoring_id,1)#), 
-
-        query <- paste0("INSERT INTO indicator 
-                         (indicator, value, monitoring) 
-                         VALUES(", indicator, ", ", value, ", ", monitoring, ")")
-        print("Inserting into table indicator")
-        dbSendQuery(db,query)
+        indicator = 2 # Latencia do sono
+        value = info$total_sleep_time
+        monitoring <- tail(monitoring_id,1)
+        send_query_indicator(db,indicator,value,monitoring)
+        
+        #indicator = 10 #  
+        #value = info$out_bed_time
+        #monitoring <- tail(monitoring_id,1) 
+        #send_query_indicator(db,indicator,value,monitoring)
+        
+        indicator = 11 # Wake after onset
+        value = info$wake_after_onset
+        monitoring <- tail(monitoring_id,1) 
+        send_query_indicator(db,indicator,value,monitoring)       
         
         
       }else{
         if(cochilo == 1){
-
-          indicator = 6#, # Cochilo
-          value = info$efficiency#,
-          monitoring <- tail(monitoring_id,1)#), 
-          query <- paste0("INSERT INTO indicator 
-                           (indicator, value, monitoring) 
-                           VALUES(", indicator, ", ", value, ", ", monitoring, ")")
-          print("Inserting into table indicator")
-          dbSendQuery(db,query)
+          #' 
+          #' Cochilos: Número de cochilos em um período de 24 horas.
+          #' Duração de cochilo: Duração média dos cochilos em minutos.
+          #' Frequência de cochilo: Número de dias em um período de uma semanacom registros de cochilos
+          #' 
+          
+          #indicator = 6 # Número de cochilos em um período de 24 horas.
+          #value = info$efficiency
+          #monitoring <- tail(monitoring_id,1)
+          #send_query_indicator(db,indicator,value,monitoring)
           
   
-          indicator = 7#, # Duracao do cochilo
-          value = info$total_sleep_time#,
-          monitoring <- tail(monitoring_id,1)#), 
-  
-          query <- paste0("INSERT INTO indicator 
-                           (indicator, value, monitoring) 
-                           VALUES(", indicator, ", ", value, ", ", monitoring, ")")
-          print("Inserting into table indicator")
-          dbSendQuery(db,query)
+          #indicator = 7 # Duracao MEDIA do cochilo
+          #value = info$total_sleep_time
+          #monitoring <- tail(monitoring_id,1) 
+          #send_query_indicator(db,indicator,value,monitoring)
+          
+          #indicator = 8 # Frequencia do cochilo
+          #value = 
+          #monitoring <- tail(monitoring_id,1)
+          #send_query_indicator(db,indicator,value,monitoring)
         }
       }
       

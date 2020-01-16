@@ -1,10 +1,19 @@
 #' Use the Hchs database, verify if the file has 'NA' data in activity collumn, insert the date that is missing,
 #' convert the timestamp to .agd format and the data to a .agd file. After that the .agd file is loaded and the
 #' library actigraph.sleepr is used to process the data. Then the agd_to_sleepweb is called.
+#' 
+#' 
+
+library("print.R")
+
+
 hchs_to_agd <- function(){
+  
+  
   library(magrittr,DBI)
   library(RSQLite)
   library(actigraph.sleepr)
+  library(uuid)
 
   file <- readline(prompt="Enter: /path_to_file/file_name.csv: ")
   a = read.csv(file)
@@ -32,6 +41,13 @@ hchs_to_agd <- function(){
   file.remove("temp.agd")
   
   agd_to_sleepweb(dataResult)
-  
+
+
 }
 
+
+ddd <- function() {
+  print1();
+  print2();
+  print3();
+}
