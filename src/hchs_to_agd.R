@@ -4,11 +4,12 @@
 #' 
 #' 
 
-library("print.R")
-
-
 hchs_to_agd <- function(){
   
+  source("src/insert_date.R")
+  source("src/timestamp_to_agd.R")
+  source("src/agd_to_sleepweb.R")
+  source("src/verify_NA.R")
   
   library(magrittr,DBI)
   library(RSQLite)
@@ -43,11 +44,4 @@ hchs_to_agd <- function(){
   agd_to_sleepweb(dataResult)
 
 
-}
-
-
-ddd <- function() {
-  print1();
-  print2();
-  print3();
 }

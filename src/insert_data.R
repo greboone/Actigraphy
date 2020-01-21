@@ -1,5 +1,6 @@
 #' Insert data connect to the database 'monitoring' and send the data for each monitoring input
 insert_data <- function(info, linha, cochilo, patient_uuid){
+  source(file = "src/send_query_indicator.R")
   print("Inside insert_data")
   print(info)
   

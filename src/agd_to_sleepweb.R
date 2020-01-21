@@ -1,5 +1,6 @@
 # Script that converts the AGD data to put in Sleepweb pattern
 agd_to_sleepweb <- function(data){
+  source(file = "src/insert_data.R")
   library(RPostgreSQL)
   print(data)
   
