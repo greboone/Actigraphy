@@ -1,10 +1,10 @@
 #' Insert date insert to the data missing values
-insert_date <- function(data){
+insert_date_mesa <- function(data){
   print("Inside insert_date")
   lines = tail(data$line,1)
   i=1
   day = 1
-  b = data.frame(timestamp = data$time)
+  b = data.frame(timestamp = data$linetime)
   class(b$timestamp) = "POSIXct"
   
   while(i <= lines){
@@ -16,23 +16,30 @@ insert_date <- function(data){
       tmp1 = data$dayofweek[i+1]
     }
     
-    date <- paste0("2000-01-0", day)
-    aux <- paste(date, data$time[i])
+    if(day > 9){
+      date <- paste0("2000-01-", day)  
+    }else{
+      date <- paste0("2000-01-0", day)
+    }
+    aux <- paste(date, data$linetime[i])
     b$timestamp[i] <- aux 
     
     if(tmp != tmp1){
       day = day+1
     }
+    
+    p <- paste0(i, " | ", aux)
+    print(p)
     i = i+1
   }
   
   df <- structure(list(dataTimestamp = b$timestamp,
-                      axis1 = data$activity,
-                      steps = data$line), 
-                     .Names = c("dataTimestamp","axis1","steps"), 
-                      class = "data.frame", 
+                       axis1 = data$activity,
+                       steps = data$line), 
+                  .Names = c("dataTimestamp","axis1","steps"), 
+                  class = "data.frame", 
                   row.names = c(NA, tail(data$line,1)))
-
+  
   df
 }
 
