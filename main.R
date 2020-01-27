@@ -1,6 +1,7 @@
 #include
 source(file = "src/hchs_to_agd.R")
 source(file = "src/mesa_to_agd.R")
+source(file = "src/oya_to_agd.R")
 
  # ideia de menu
 while(1){
@@ -12,7 +13,7 @@ while(1){
   message("0 - Exit;")
   message("1 - hchs to agd;")
   message("2 - mesa to agd;")
-  message("3 -  oya to agd; (not implemented yet)")
+  message("3 -  oya to agd; (testing)")
   i=as.numeric(readline(prompt="Choose the type of file you want to insert: "))
   if(i == 0){
     break;
