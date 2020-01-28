@@ -8,16 +8,17 @@ oya_to_agd <- function(){
   source("src/insert_date_oya.R")
   source("src/timestamp_to_agd.R")
   source("src/agd_to_sleepweb.R")
-  source("src/verify_NA.R")
+  source("src/verify_NA_oya.R")
   
   library(magrittr,DBI)
   library(RSQLite)
   library(actigraph.sleepr)
   library(uuid)
   
-  file <- readline(prompt="Enter: /path_to_file/file_name.csv: ")
+  #file <- readline(prompt="Enter: /path_to_file/file_name.csv: ")
+  file <- file.choose()
   a = read.csv(file)
-  #a = verify_NA_oya(a)
+  a = verify_NA_oya(a)
   b <- insert_date_oya(a)
   b <- timestamp_to_agd(b)
   

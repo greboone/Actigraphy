@@ -15,7 +15,8 @@ mesa_to_agd <- function(){
   library(actigraph.sleepr)
   library(uuid)
   
-  file <- readline(prompt="Enter: /path_to_file/file_name.csv: ")
+  #file <- readline(prompt="Enter: /path_to_file/file_name.csv: ")
+  file <- file.choose()
   a = read.csv(file)
   a = verify_NA(a)
   b <- insert_date_mesa(a)

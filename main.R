@@ -11,9 +11,9 @@ while(1){
   cat("\014")
   message("Types of files:")
   message("0 - Exit;")
-  message("1 - hchs to agd;")
-  message("2 - mesa to agd;")
-  message("3 -  oya to agd; (testing)")
+  message("1 - hchs database; (Usually epochs of 30 seconds)")
+  message("2 - mesa database; (Usually epochs of 30 seconds)")
+  message("3 -  oya database; (Usually epochs of 01 second, it takes longer)")
   i=as.numeric(readline(prompt="Choose the type of file you want to insert: "))
   if(i == 0){
     break;
