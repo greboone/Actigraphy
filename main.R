@@ -2,6 +2,7 @@
 source(file = "src/hchs_to_agd.R")
 source(file = "src/mesa_to_agd.R")
 source(file = "src/oya_to_agd.R")
+source(file = "src/file_to_agd.R")
 
  # ideia de menu
 while(1){
@@ -18,11 +19,11 @@ while(1){
   if(i == 0){
     break;
   }else if(i==1){
-    hchs_to_agd();
+    file_to_agd(1);
   }else if(i==2){
-    mesa_to_agd();
+    file_to_agd(2);
   }else if(i==3){
-    oya_to_agd();
+    file_to_agd(3);
   }
 }
 
