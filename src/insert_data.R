@@ -41,8 +41,8 @@ insert_data <- function(info, linha, cochilo, patient_uuid){
       print("Inserted into table")
       
       print("Selecting 'id' from table")
-      query <- paste0("SELECT id 
-                     FROM monitoring;")
+        query <- paste0("SELECT id 
+                       FROM monitoring;")
       print("Sending Query")
       monitoring_id <- dbSendQuery(db, query)
       monitoring_id <- dbFetch(monitoring_id)
@@ -78,11 +78,32 @@ insert_data <- function(info, linha, cochilo, patient_uuid){
           #' 
           #' Cochilos: Número de cochilos em um período de 24 horas.
           #' Duração de cochilo: Duração média dos cochilos em minutos.
-          #' Frequência de cochilo: Número de dias em um período de uma semanacom registros de cochilos
+          #' ```acho q n```Frequência de cochilo: Número de dias em um período de uma semanacom registros de cochilos
           #' 
+          #' 
+
+          indicator = 1 # Eficiencia
+          value = info$efficiency
+          monitoring <- tail(monitoring_id,1)
+          send_query_indicator(db,indicator,value,monitoring)
+          
+          
+          indicator = 2 # Latencia do sono
+          value = info$total_sleep_time
+          monitoring <- tail(monitoring_id,1)
+          send_query_indicator(db,indicator,value,monitoring)
+          
+          indicator = 11 # Wake after onset
+          value = info$wake_after_onset
+          monitoring <- tail(monitoring_id,1) 
+          send_query_indicator(db,indicator,value,monitoring)   
+          
+          numero_cochilos = numero_cochilos + 1
+          
+          media_cochilos = media_cochilos + info$latency
           
           #indicator = 6 # Número de cochilos em um período de 24 horas.
-          #value = info$efficiency
+          #value = info$
           #monitoring <- tail(monitoring_id,1)
           #send_query_indicator(db,indicator,value,monitoring)
           
@@ -96,6 +117,38 @@ insert_data <- function(info, linha, cochilo, patient_uuid){
           #value = 
           #monitoring <- tail(monitoring_id,1)
           #send_query_indicator(db,indicator,value,monitoring)
+        }else if(cochilo == 2){
+          #numero_cochilos = numero_cochilos + 1
+          #media_cochilos = media_cochilos + info$latency
+          media_cochilos = (media_cochilos/numero_cochilos)
+          
+          indicator = 1 # Eficiencia
+          value = info$efficiency
+          monitoring <- tail(monitoring_id,1)
+          send_query_indicator(db,indicator,value,monitoring)
+          
+          
+          indicator = 2 # Latencia do sono
+          value = info$total_sleep_time
+          monitoring <- tail(monitoring_id,1)
+          send_query_indicator(db,indicator,value,monitoring)
+          
+          indicador = 6
+          value = numero_cochilos
+          monitoring = tail(monitoring_id,1)
+          send_query_indicator(db,indicator,value,monitoring)
+          
+          indicator = 7
+          value = media_cochilos
+          monitoring <- tail(monitoring_id,1)
+          send_query_indicator(db,indicator,value,monitoring)
+          
+          indicator = 11 # Wake after onset
+          value = info$wake_after_onset
+          monitoring <- tail(monitoring_id,1) 
+          send_query_indicator(db,indicator,value,monitoring)   
+
+          
         }
       }
       

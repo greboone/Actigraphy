@@ -5,6 +5,8 @@
 
 file_to_agd <- function(file_type){
   
+  source("src/insert_date_hchs.R")
+  source("src/insert_date_mesa.R")
   source("src/insert_date_oya.R")
   source("src/timestamp_to_agd.R")
   source("src/agd_to_sleepweb.R")
