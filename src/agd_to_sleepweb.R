@@ -79,17 +79,17 @@ agd_to_sleepweb <- function(data){
         
         condition_cochilo <- data$total_sleep_time[i]
         
-        if(condition_cochilo <= 300){
+        if(condition_cochilo <= 120){
           if(i != linha){
-            insert_data(data[i,], i, 1, patient_uuid)  
+            insert_data(data[i,], i, 0, patient_uuid)  
           }else{
-            insert_data(data[i,], i, 3, patient_uuid)
+            insert_data(data[i,], i, 0, patient_uuid)
           }
         }else{
           if(i != linha){
             insert_data(data[i,], i, 0, patient_uuid)  
           }else{
-            insert_data(data[i,], i, 2, patient_uuid)
+            insert_data(data[i,], i, 0, patient_uuid)
           }
         }
         
