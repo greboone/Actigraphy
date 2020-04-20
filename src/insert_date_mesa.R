@@ -27,17 +27,14 @@ insert_date_mesa <- function(data){
     if(tmp != tmp1){
       day = day+1
     }
-    
-    p <- paste0(i, " | ", aux)
-    print(p)
     i = i+1
   }
   
   df <- structure(list(dataTimestamp = b$timestamp,
                        axis1 = data$activity,
                        steps = data$line), 
-                  .Names = c("dataTimestamp","axis1","steps"), 
-                  class = "data.frame", 
+                       .Names = c("dataTimestamp","axis1","steps"), 
+                       class = "data.frame", 
                   row.names = c(NA, tail(data$line,1)))
   
   df

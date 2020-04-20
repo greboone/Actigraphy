@@ -31,10 +31,10 @@ insert_date_hchs <- function(data){
   }
   
   df <- structure(list(dataTimestamp = b$timestamp,
-                      axis1 = data$activity,
-                      steps = data$line), 
-                     .Names = c("dataTimestamp","axis1","steps"), 
-                      class = "data.frame", 
+                       axis1 = data$activity,
+                       steps = data$line), 
+                       .Names = c("dataTimestamp","axis1","steps"), 
+                       class = "data.frame", 
                   row.names = c(NA, tail(data$line,1)))
 
   df

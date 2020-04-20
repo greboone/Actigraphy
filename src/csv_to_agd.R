@@ -3,7 +3,7 @@
 #' loaded and the library actigraph.sleepr is used to process the data. Then the agd_to_sleepweb is called.
 #' 
 
-file_to_agd <- function(file_type){
+csv_to_agd <- function(file_type){
   
   source("src/insert_date_hchs.R")
   source("src/insert_date_mesa.R")
@@ -20,13 +20,13 @@ file_to_agd <- function(file_type){
   file <- file.choose()
   a = read.csv(file)
   
-  if(file_type == 1){       # HCHS
+  if(file_type == 1){         # HCHS
     a = verify_NA(a)
     b <- insert_date_hchs(a)
-  }else if(file_type == 2){ # MESA
+  }else if(file_type == 2){   # MESA
     a = verify_NA(a)
     b <- insert_date_mesa(a)
-  }else if(file_type == 3){ # OYA
+  }else if(file_type == 3){   # OYA
     a = verify_NA_oya(a)
     b <- insert_date_oya(a) 
   }
@@ -42,7 +42,7 @@ file_to_agd <- function(file_type){
   dbWriteTable(db,"data", b, append=TRUE)
   dbDisconnect(db)
   
-  
+    
   dataRaw_01 <- read_agd('temp.agd')
   print(has_missing_epochs(dataRaw_01))
 
