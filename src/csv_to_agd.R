@@ -10,6 +10,7 @@ csv_to_agd <- function(file_type){
   source("src/insert_date_oya.R")
   source("src/timestamp_to_agd.R")
   source("src/agd_to_sleepweb.R")
+  source("src/verify_NA.R")
   source("src/verify_NA_oya.R")
   
   library(magrittr,DBI)
